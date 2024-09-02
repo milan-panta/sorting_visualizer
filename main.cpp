@@ -30,66 +30,70 @@ void DrawCells(int a, int b) {
 }
 
 void bubbleSort() {
+  bool swapped = false;
   for (int i = 0; i < TOTAL_CELLS; i++) {
     for (int j = 0; j < TOTAL_CELLS - i - 1; j++) {
       if (cells[j] > cells[j + 1]) {
+        swapped = true;
         swap(cells[j], cells[j + 1]);
-        DrawCells(j, j + 1);
       }
+      DrawCells(j, j + 1);
     }
+    if (!swapped)
+      break;
   }
 }
 
 void mergeSort(int l, int r) {
-  if (l == r) {
+  if (l >= r) {
     return;
   }
-  if (l == r - 1) {
-    if (cells[l] > cells[r]) {
-      swap(cells[l], cells[r]);
-      DrawCells(l, r);
-    }
-  }
+
   int mid = l + (r - l) / 2;
+
   mergeSort(l, mid);
-  mergeSort(mid, r);
+  mergeSort(mid + 1, r);
+
+  int start1 = l;
   int start2 = mid + 1;
 
   if (cells[mid] <= cells[start2]) {
     return;
   }
 
-  while (l <= mid && start2 <= r) {
-    if (cells[l] <= cells[start2]) {
-      l++;
+  while (start1 <= mid && start2 <= r) {
+    if (cells[start1] <= cells[start2]) {
+      start1++;
     } else {
       int value = cells[start2];
       int index = start2;
 
-      while (index != l) {
+      while (index != start1) {
         cells[index] = cells[index - 1];
         index--;
       }
-      cells[l] = value;
+      cells[start1] = value;
 
-      l++;
+      start1++;
       mid++;
       start2++;
     }
+    DrawCells(min(start1, TOTAL_CELLS - 1), min(start2, TOTAL_CELLS - 1));
   }
 }
 
 int main() {
   srand(static_cast<unsigned int>(time(nullptr)));
   for (int i = 0; i < TOTAL_CELLS; i++) {
-    cells[i] = generateCell();
+    // cells[i] = generateCell();
+    cells[i] = 10 * i + MIN_CELL_HEIGHT;
   }
   cout << "Commence Sorting" << endl;
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Sorting Visualizer");
-  SetTargetFPS(10);
+  SetTargetFPS(15);
 
-  bubbleSort();
-  // mergeSort(0, TOTAL_CELLS);
+  // bubbleSort();
+  mergeSort(0, TOTAL_CELLS - 1);
 
   CloseWindow();
 
