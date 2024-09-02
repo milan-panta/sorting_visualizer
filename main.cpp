@@ -85,8 +85,8 @@ void mergeSort(int l, int r) {
 int main() {
   srand(static_cast<unsigned int>(time(nullptr)));
   for (int i = 0; i < TOTAL_CELLS; i++) {
-    // cells[i] = generateCell();
-    cells[i] = 10 * i + MIN_CELL_HEIGHT;
+    cells[i] = generateCell();
+    // cells[i] = 10 * i + MIN_CELL_HEIGHT;
   }
   cout << "Commence Sorting" << endl;
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Sorting Visualizer");
