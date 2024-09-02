@@ -20,7 +20,6 @@ int generateCell() {
 vector<int> cells(TOTAL_CELLS);
 
 void DrawCells(int a, int b) {
-  // draw cells with a, b being most recent swaps
   BeginDrawing();
   ClearBackground(BLACK);
   for (int i = 0; i < TOTAL_CELLS; i++) {
@@ -34,24 +33,63 @@ void bubbleSort() {
   for (int i = 0; i < TOTAL_CELLS; i++) {
     for (int j = 0; j < TOTAL_CELLS - i - 1; j++) {
       if (cells[j] > cells[j + 1]) {
-        DrawCells(j, j + 1);
         swap(cells[j], cells[j + 1]);
+        DrawCells(j, j + 1);
       }
     }
   }
 }
 
+void mergeSort(int l, int r) {
+  if (l == r) {
+    return;
+  }
+  if (l == r - 1) {
+    if (cells[l] > cells[r]) {
+      swap(cells[l], cells[r]);
+      DrawCells(l, r);
+    }
+  }
+  int mid = l + (r - l) / 2;
+  mergeSort(l, mid);
+  mergeSort(mid, r);
+  int start2 = mid + 1;
+
+  if (cells[mid] <= cells[start2]) {
+    return;
+  }
+
+  while (l <= mid && start2 <= r) {
+    if (cells[l] <= cells[start2]) {
+      l++;
+    } else {
+      int value = cells[start2];
+      int index = start2;
+
+      while (index != l) {
+        cells[index] = cells[index - 1];
+        index--;
+      }
+      cells[l] = value;
+
+      l++;
+      mid++;
+      start2++;
+    }
+  }
+}
+
 int main() {
+  srand(static_cast<unsigned int>(time(nullptr)));
   for (int i = 0; i < TOTAL_CELLS; i++) {
     cells[i] = generateCell();
   }
   cout << "Commence Sorting" << endl;
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Sorting Visualizer");
-  SetTargetFPS(60);
+  SetTargetFPS(10);
 
-  while (WindowShouldClose() == false) {
-    bubbleSort();
-  }
+  bubbleSort();
+  // mergeSort(0, TOTAL_CELLS);
 
   CloseWindow();
 
